@@ -1,43 +1,38 @@
 #######################################################################################################################################################################
 # Author: Jutair Rios
 #######################################################################################################################################################################
-#Part 1:
-
-#Write a function named 'pollutantmean' that calculates the mean of a pollutant (sulfate or nitrate) across a specified list of monitors. 
-#The function 'pollutantmean' takes three arguments: 'directory', 'pollutant', and 'id'. 
-#Given a vector monitor ID numbers, 'pollutantmean' reads that monitors' particulate matter data from the directory specified in the 'directory' 
-#argument and returns the mean of the pollutant across all of the monitors, ignoring any missing values coded as NA. A prototype of the function is as follows
-#You can see some example output from this function. The function that you write should be able to match this output:
-#https://d396qusza40orc.cloudfront.net/rprog%2Fdoc%2Fpollutantmean-demo.html
-#The required output:
-#pollutantmean("specdata", "sulfate", 1:10) ## [1] 4.064
-#pollutantmean("specdata", "nitrate", 70:72) ## [1] 1.706
-#######################################################################################################################################################################
-
-## pollutantmean <- function(directory, pollutant, id = 1:332) {
+#Part 3
+#Write a function that takes a directory of data files and a threshold for complete cases and calculates the correlation between sulfate and nitrate for monitor locations where the number of completely observed cases (on all variables) is greater than the threshold. The function should return a vector of correlations for the monitors that meet the threshold requirement. If no monitors meet the threshold requirement, then the function should return a numeric vector of length 0. A prototype of this function follows
+#For this function you will need to use the 'cor' function in R which calculates the correlation between two vectors. Please read the help page for this function via '?cor' and make sure that you know how to use it.
+#corr <- function(directory, threshold = 0) {
 ## 'directory' is a character vector of length 1 indicating
 ## the location of the CSV files
 
-## 'pollutant' is a character vector of length 1 indicating
-## the name of the pollutant for which we will calculate the
-## mean; either "sulfate" or "nitrate".
+## 'threshold' is a numeric vector of length 1 indicating the
+## number of completely observed observations (on all
+## variables) required to compute the correlation between
+## nitrate and sulfate; the default is 0
 
-## 'id' is an integer vector indicating the monitor ID numbers
-## to be used
+## Return a numeric vector of correlations
+#}
 
-## Return the mean of the pollutant across all monitors list
-## in the 'id' vector (ignoring NA values)
-## }
+#You can see some example output from this function:https://d396qusza40orc.cloudfront.net/rprog%2Fdoc%2Fcorr-demo.html
+#######################################################################################################################################################################
 
-pollutantmean <- function(specdata,pollutant,id=1:332)
+
+corr <- function(specdata,threshold=0)
 {
   specdata <- "/home/jutair/Documentos/codigos/R-programming-Coursera/Coursera/Assignment_1/specdata/"
-  data=numeric()
-  for(i in id)
+  df=complete(specdata)
+  ids=df[df["nobs"]>threshold,]$id
+  correlation=numeric()
+  for(i in ids)
   {
-    newRead=read.csv(paste(specdata,formatC(i,width=3,flag="0"),".csv",sep=""))
-    data=c(data,newRead[[pollutant]])
+    newRead=read.csv(paste(specdata,formatC(i,width=3,flag="0"), 
+                           ".csv",sep=""))
+    snedecor=newRead[complete.cases(newRead), ]
+    correlation=c(correlation,cor(snedecor$sulfate,snedecor$nitrate))
   }
-  return(print(mean(data,na.rm=TRUE),digits=4))
+  return(correlation)
 }
 
