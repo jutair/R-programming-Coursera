@@ -49,7 +49,7 @@
 
 complete <- function(specdata,id=1:332)
 {
-  specdata <- "/home/jutair/Documentos/codigos/R-programming-Coursera/Coursera/Assignment_1/specdata/"
+  specdata <- "/home/jutair/Documentos/codigos/R-programming-Coursera/Coursera/Assignment_1/specdata/" #Folder where is the CSV file
   nobs=numeric()
   for(i in id)
   {
